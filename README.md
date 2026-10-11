@@ -9,7 +9,7 @@ agents/          Canonical roles: portable frontmatter + plain-Markdown prompt
 skills/          Agent Skills (SKILL.md): domain-work, domain-build, domain-update, domain-learn, skill-evolve
 harnesses.json   Model per tier for each harness; edit for the target machine
 build.py         Renders agents/ into dist/<harness>/ (stdlib Python 3.11+)
-extras/          Harness-specific settings snippets
+extras/          Harness-specific settings snippets; extras/hooks/ holds the pilot-log hook
 docs/            Domain skills guide, design, and review
 tests/           Evaluation pack, fixtures, failure log; tests/domain/ for domain-skill scenarios
 ```
@@ -69,6 +69,7 @@ The per-harness notes below cover what the command does not do.
 - Check discovery with `/agents` after a restart.
 - Start sessions as the orchestrator with `claude --agent orchestrator`, or set `"agent": "orchestrator"` in `~/.claude/settings.json` to make it the default. It inherits all tools and uses the `strong` model.
 - Optionally merge `extras/claude-settings.snippet.json` into `~/.claude/settings.json`. Do not replace the whole file; preserve existing hooks, permissions, plugins, and environment entries. Its model names are version-specific.
+- For the pilot, install the [pilot-log hook](#pilot-log-hook-claude-code).
 - The Bash tool caps one command at 10 minutes. Scope long test suites, or tester reports a timeout.
 
 ### Codex
@@ -107,17 +108,42 @@ Skills in `skills/` follow the Agent Skills format: a folder with `SKILL.md`. Cl
 - For changes heavy on business rules, judge reviews the plan before implementation, so rule conflicts surface before code is written.
 - The orchestrator ends its report with domain candidates: facts the task established, with evidence. It never records them. Run domain-update yourself to save the ones you accept.
 - domain-work's description and the instruction snippet trigger only on domain questions or explicit domain-memory requests, so coding sessions do not load it automatically.
-- Lesson candidates about agents and skills go to [tests/failures.md](tests/failures.md), and skill-evolve proposes changes to any of them.
+- Lesson candidates about agents and skills go to `tests/failures.local.md` (gitignored; template in [tests/failures.md](tests/failures.md)), and skill-evolve proposes changes to any of them.
 
 ## Improve instructions from failures
 
-Agents and domain-work end a report with a lesson candidate when you corrected them or a check failed because of an instruction. Add the ones you agree with to [tests/failures.md](tests/failures.md).
+Agents and domain-work end a report with a lesson candidate when you corrected them or a check failed because of an instruction. Add the ones you agree with to `tests/failures.local.md`. It is gitignored so your entries never reach the remote; start it by copying the template [tests/failures.md](tests/failures.md).
 
 [skill-evolve](skills/skill-evolve/SKILL.md) reads that log, groups repeated failures by cause, and proposes one minimal edit and one held-in eval case per pattern. It does not apply changes. Edit `agents/` or the skill, rebuild, run the comparison in the evaluation pack, keep the change only if nothing regresses, then update the entry status.
 
 ## Pilot
 
-Before changing instructions, use the harness on real work for two weeks and fill in the [pilot log](tests/pilot-log.md). Its end-of-pilot review decides which roles to keep, change, or delete.
+Before changing instructions, use the harness on real work for two weeks and fill in the pilot log. [tests/pilot-log.md](tests/pilot-log.md) is the template; keep your entries in `tests/pilot-log.local.md`, which is gitignored so they never reach the remote (copy the template there, or let the hook below create it). Its end-of-pilot review decides which roles to keep, change, or delete.
+
+### Pilot-log hook (Claude Code)
+
+`extras/hooks/pilot_log.py` is a `SessionEnd` hook that adds one row per session to the Tasks table in `tests/pilot-log.local.md`, creating it from the template if it does not exist. It fills in the countable columns from the session transcript:
+
+- Date, and the first prompt as the task (trimmed to 90 characters)
+- Model, and the agents called with counts, for example `explore×2, tester×1`
+- Tokens: input, output, cache writes, and cache reads summed over the session, including subagent transcripts when Claude Code writes them. Cache reads usually dominate the total. A row notes `subagent tokens not found` when agents ran but their usage could not be located.
+- Notes: the session ID and project folder. A resumed session updates its row instead of adding another.
+
+Helped and Wrong stay blank for you to judge. The hook logs one row per session, not per task, so start a new session for each task or edit the row afterwards. Sessions from every project go into this clone's log. It needs only Python 3 and never blocks a session; errors go to stderr.
+
+To install it, merge this into the `hooks` object of `~/.claude/settings.json`, replacing the path with your clone. Do not replace existing hooks.
+
+```json
+"SessionEnd": [
+  {
+    "hooks": [
+      { "type": "command", "command": "python3 /path/to/dotkaizen/extras/hooks/pilot_log.py", "timeout": 30 }
+    ]
+  }
+]
+```
+
+Set `PILOT_LOG` to write to a different file. Remove the entry when the pilot ends. Test it with `python3 tests/test_pilot_log.py`.
 
 ## Evaluate changes
 

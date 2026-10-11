@@ -97,7 +97,7 @@ Update the canonical knowledge base when evidence changes, behaviour changes, or
 
 ## Use with agent roles
 
-Domain knowledge work is separate from task execution by the [agent roles](../README.md#roles). The orchestrator, explore, and tester do not access `~/.domains/`. domain-reader answers one bounded question for the orchestrator with a short cited brief, and judge reads memory to verify changes. Both use direct recall without writes. Record lesson candidates about these skills in [tests/failures.md](../tests/failures.md).
+Domain knowledge work is separate from task execution by the [agent roles](../README.md#roles). The orchestrator, explore, and tester do not access `~/.domains/`. domain-reader answers one bounded question for the orchestrator with a short cited brief, and judge reads memory to verify changes. Both use direct recall without writes. Record lesson candidates about these skills in `tests/failures.local.md` (gitignored; template in [tests/failures.md](../tests/failures.md)).
 
 ## Install and activate
 

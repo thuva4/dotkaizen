@@ -1,3 +1,7 @@
 .DS_Store
 __pycache__/
 dist/
+tests/pilot-log.local.md.lock
+tests/.pilot-log.*
+tests/pilot-log.local.md
+tests/failures.local.md

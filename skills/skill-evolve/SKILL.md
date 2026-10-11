@@ -5,7 +5,7 @@ description: Use when asked to review recorded skill or agent failures and propo
 
 # Propose instruction changes from recorded failures
 
-Read `tests/failures.md` in the dotkaizen repository; ask for its path if it cannot be found. Read the files that entries name, relative to that repository root, and `tests/evaluation.md` for the existing cases. Do not edit any file. The user decides what to apply.
+Read `tests/failures.local.md` in the dotkaizen repository; it holds the entries and is gitignored. If it does not exist, read `tests/failures.md` and say it is only the template. Ask for the path if neither can be found. Read the files that entries name, relative to that repository root, and `tests/evaluation.md` for the existing cases. Do not edit any file. The user decides what to apply.
 
 ## Find patterns
 

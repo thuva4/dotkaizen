@@ -1,6 +1,6 @@
 # Pilot log
 
-Two weeks of real work before adding or changing instructions. The goal is to find out which roles earn their cost, then delete the rest. Record wrong behaviour in [failures.md](failures.md); record every task here, including ones where delegation did not happen.
+Two weeks of real work before adding or changing instructions. The goal is to find out which roles earn their cost, then delete the rest. Record wrong behaviour in `failures.local.md` (template: [failures.md](failures.md)); record every task here, including ones where delegation did not happen.
 
 ## Setup
 
