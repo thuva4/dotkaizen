@@ -1,0 +1,9 @@
+{
+  "claude": {"fast": "haiku", "strong": "opus", "reviewer": "opus"},
+  "codex": {"fast": "gpt-6-luna", "strong": "gpt-6.1-sol", "reviewer": "gpt-6.1-sol"},
+  "opencode": {
+    "fast": "anthropic/claude-haiku-5-5",
+    "strong": "anthropic/claude-opus-5-5",
+    "reviewer": "openai/gpt-6.1-sol"
+  }
+}

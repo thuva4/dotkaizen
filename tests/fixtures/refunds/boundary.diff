@@ -1,0 +1,8 @@
+--- a/payments.py
++++ b/payments.py
+@@ -5,4 +5,4 @@
+ 
+ def retained(created_at, now):
+     """The key expires at the boundary, using seconds."""
+-    return now < created_at + RETRY_KEY_SECONDS
++    return now <= created_at + RETRY_KEY_SECONDS

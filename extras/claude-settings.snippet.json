@@ -1,0 +1,24 @@
+{
+  "model": "opusplan",
+  "advisorModel": "opus",
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5-5": {
+      "effortLevel": "high",
+      "autoCompactWindow": 200000
+    },
+    "claude-sonnet-5-5": {
+      "effortLevel": "medium",
+      "autoCompactWindow": 200000
+    },
+    "claude-fable-5-1": {
+      "effortLevel": "high",
+      "autoCompactWindow": 200000
+    }
+  },
+  "autoCompactEnabled": true,
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "haiku",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "70"
+  }
+}
